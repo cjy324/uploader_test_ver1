@@ -28,14 +28,12 @@ a{
 }
 .upload_area{
     height: 206px;
+    width: 100%;
     text-align: center;  
     border-top: solid rgb(167, 167, 167) 2px;
     border-bottom: solid rgb(167, 167, 167) 2px;
 }
-.upload_area > iframe{
-    height: 100%;
-    width: 100%;
-}
+
 .info_area{
     height: 29px;
     border-bottom: solid rgb(167, 167, 167) 1px;

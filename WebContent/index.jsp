@@ -19,7 +19,8 @@
                 <div>파일 크기</div>
             </div>
             <div id="upload_area" class="upload_area">
-                <iframe id="upload_frame" class="upload_frame" src="uploadArea.jsp" frameborder="0"></iframe>
+				<input id="fileInput" type='file' onchange="setUploadFiles(event)" name='userfile' multiple style="display: none;">	
+				<ul id="uploadZone" style="height: 100%; border: 2px solid;"></ul>
             </div>
             <div id="info_area" class="info_area">
                 <ul>
@@ -46,6 +47,9 @@
                             	<button type="button" id="button_add" onclick="selectFiles()">
                             		<span>파일추가</span>
                             	</button>
+                            	<button type="button" id="button_send" onclick="startUpload(event)">
+                            		<span>전송하기</span>
+                            	</button>
                                 <button type="button">
                                     <span>항목제거</span>
                                 </button>
@@ -58,33 +62,121 @@
                 </table>
             </div>
         </div>
- 		<div class="uploaded_body">
-    		<iframe class="uploaded_frame" src="fileUpload.jsp" frameborder="0"></iframe>
+ 		<div id="uploaded_body" class="uploaded_body">
+    		<!-- <iframe class="uploaded_frame" src="fileUpload.jsp" frameborder="0"></iframe> -->
     	</div>
     </section>
 	
 <script lang="text/javascript">
-	//iframe window 가져오기
-	const uploadWindow = document.getElementById('upload_frame').contentWindow;
+	// iframe window 가져오기
+	// const uploadWindow = document.getElementById("upload_frame").contentWindow;
 
+	//
+	const fileInput = document.getElementById("fileInput");
+	const uploadZone = document.getElementById("uploadZone");
+	
+	// file정보를 담을 formData 객체 생성
+	const formData = new FormData()
+	
 	// 버튼으로 input 불러오기
 	function selectFiles() {
-		uploadWindow.document.getElementById("fileInput").click();
+		fileInput.click();
 	}
 	
-	// 파일 업로드
-	function setUploadFiles(e){
-		// 파일 배열 가져오기
-		const files = e.target.files;
-		console.log(files);
+	// 업로드 될 파일리스트 그리기
+	function showFiles(files) {
 		
-		// file정보를 담을 formData 객체 생성
-	    const formData = new FormData()
-	    for(let i = 0; i <= files.length; i++){
-	        formData.append("file-" + i, files[i]);
+		let fileListLi = ""	// dropZone에 drop한 파일별 태그 생성
+	    
+	    for(let i = 0; i < files.length; i++) {
+	    	fileListLi += "<li>";
+	    	fileListLi += "<input id='chk_file_" + [i] + "' type='checkbox'  value='false'>";
+	    	fileListLi += "<span>" + files[i].name + "</span>";
+	    	fileListLi += "</li>";
 	    }
 		
-	 	// ajax를 하기 위한 XmlHttpRequest 객체
+		uploadZone.innerHTML = fileListLi;
+	}
+	
+	// 파일 업로드를 위한 데이터 셋팅
+	function setUploadFiles(e){
+		// 파일 배열 가져오기
+		const newFiles = e.target.files;
+		console.log(newFiles);
+		
+		// input에 파일이 들어오면 dropZone에 업로드 될 파일리스트 그리기
+		showFiles(newFiles)
+		
+		// file정보를 담을 formData 객체 생성
+	    for(let i = 0; i <= newFiles.length; i++){
+	        formData.append("files", newFiles[i]);
+	    }
+	}
+	
+	// 업로드 될 파일리스트 값 세팅
+	function setFiles(droppedFiles) {
+		
+/* 	    // 현재 세팅되있는 파일과 동일한 파일인지 체크
+	    for(let i = 0; i < fileInput.files.length; i++){
+	        for(let k = 0; k < newFiles.length; k++){
+	            if(fileInput.files[i] = newFiles[k]){
+	                alert(newFiles[k].name + "은 중복된 파일입니다.")
+	                return;
+	            }
+	        }
+	    } */
+    
+	    // fileInput.files = newFiles	// input file 영역에 파일 항목을 드랍된 파일들로 대체
+	    showFiles(droppedFiles)	// dropZone에 파일리스트 그리기	  
+	    
+	 	// file정보를 담을 formData 객체 생성
+	    for(let i = 0; i <= droppedFiles.length; i++){
+	        formData.append("files", droppedFiles[i]);
+	    }
+	}
+	
+	// 드래그한 파일이 최초로 uploadZone에 진입했을 때
+	uploadZone.addEventListener("dragenter", function(e) {
+	    e.stopPropagation()
+	    e.preventDefault()	
+	})
+	
+	// 드래그한 파일이 uploadZone을 벗어났을 때
+	uploadZone.addEventListener("dragleave", function(e) {
+	    e.stopPropagation()
+	    e.preventDefault()
+	})
+	
+	// 드래그한 파일이 uploadZone에 머물러 있을 때
+	uploadZone.addEventListener("dragover", function(e) {
+	    e.stopPropagation()
+	    e.preventDefault()
+	})
+	
+	// 드래그한 파일이 uploadZone에 드랍되었을 때
+	uploadZone.addEventListener("drop", function(e) {
+	    e.preventDefault()
+	
+	    const droppedFiles = e.dataTransfer && e.dataTransfer.files
+	    console.log(droppedFiles)
+	
+	    if (droppedFiles != null) {
+	    	// 만약 files의 갯수가 1보다 작으면 "폴더 업로드 불가" 알림
+	        if (droppedFiles.length < 1) {
+	            alert("폴더 업로드 불가")
+	            return
+	        }
+	    	// uploadZone에 드랍된 파일들로 파일리스트 세팅
+	        setFiles(droppedFiles)
+	    } else {
+	        alert("ERROR")
+	    }
+	
+	})
+	
+	// 파일 전송
+	function startUpload(e){
+		// ajax를 하기 위한 XmlHttpRequest 객체
 	    const xhttp = new XMLHttpRequest();
 	 	
 	 	// http 요청 타입 / 주소 / 동기식 여부 설정
@@ -103,7 +195,11 @@
 	            if(req.status === 200) {
 	                console.log("성공")
 	                console.log(xhttp.responseText)
-	
+	                // 업로드 완료 후 formData 초기화
+	                formData.delete("files");
+	                // 업로드 완료 창 iframe으로 넣기
+	                /* const uploaded_frame = '<iframe class="uploaded_frame" src="fileUpload.jsp" frameborder="0"></iframe>';
+	                document.getElementById("uploaded_body").innerHTML = uploaded_frame; */
 	            }else{
 	            	console.log("실패")
 	                console.error(xhttp.responseText)
@@ -111,7 +207,6 @@
 	        }
 	    } 
 	}
-	
 	
 	
 		
