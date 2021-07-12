@@ -15,12 +15,12 @@
         <div class="uploader_body">
             <div id="top_area" class="top_area">
                 <input type="checkbox">
-                <div>파일 항목</div>
+                <div>파일 이름</div>
                 <div>파일 크기</div>
             </div>
             <div id="upload_area" class="upload_area">
 				<input id="fileInput" type='file' onchange="setUploadFiles(event)" name='userfile' multiple style="display: none;">	
-				<ul id="uploadZone" style="height: 100%; border: 2px solid;"></ul>
+				<ul id="uploadZone""></ul>
             </div>
             <div id="info_area" class="info_area">
                 <ul>
@@ -92,6 +92,7 @@
 	    	fileListLi += "<li>";
 	    	fileListLi += "<input id='chk_file_" + [i] + "' type='checkbox'  value='false'>";
 	    	fileListLi += "<span>" + files[i].name + "</span>";
+	    	fileListLi += "<span> " + files[i].size + " Byte</span>";
 	    	fileListLi += "</li>";
 	    }
 		

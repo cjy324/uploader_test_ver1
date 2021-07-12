@@ -29,9 +29,13 @@ a{
 .upload_area{
     height: 206px;
     width: 100%;
-    text-align: center;  
+    text-align: left;  
     border-top: solid rgb(167, 167, 167) 2px;
     border-bottom: solid rgb(167, 167, 167) 2px;
+}
+.uploadZone{
+	height: 100%;
+	border: 2px solid;
 }
 
 .info_area{
