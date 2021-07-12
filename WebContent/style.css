@@ -50,3 +50,16 @@ a{
     height: 30px;
     text-align: left;
 }
+
+
+.uploaded_body{
+    display: inline-block;
+    height: 300px;
+    width: 70%;
+    border: solid black 3px;
+    border-radius: 5px;
+}
+.uploaded_frame{
+	height: 100%;
+    width: 100%;
+}
