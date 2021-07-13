@@ -36,6 +36,7 @@ a{
 .uploadZone{
 	height: 100%;
 	border: 2px solid;
+	z-index: 500;
 }
 
 .info_area{

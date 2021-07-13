@@ -27,9 +27,16 @@
 				new DefaultFileRenamePolicy() // 중복 파일 처리(동일한 파일명이 업로드되면 뒤에 숫자 등을 붙여 중복 회피)
 			);
 	// 각 파일별 이름 받아오기
-	String fileName = multiReq.getFilesystemName("userfile");
+	String fileName = multiReq.getFilesystemName("files");
+	
+	String test1 = multiReq.getContentType("slicedFiles");
+	String test2 = multiReq.getContentType("files");
+	
+	System.out.print(test1);
+	System.out.print(test2);
 	
 	uploadState = "완료";
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -40,7 +47,7 @@
 <body>
 	<div>
 		<p>업로드 상태 : <%=uploadState%></p>
-		<p>파일명 : <%=multiReq.getFilesystemName("userfile") %></p>
+		<p>파일명 : <%=multiReq.getFilesystemName("files") %></p>
 		<p>업로드 경로 : ${pageContext.request.contextPath}/upload/<%=fileName%></p>
 		<p>물리적 경로 : <%=realPath%></p>
 		<img src="${pageContext.request.contextPath}/upload/<%=fileName%>">
