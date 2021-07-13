@@ -1,4 +1,3 @@
-<%@page import="java.util.Enumeration"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import = "java.io.File" %>
@@ -20,28 +19,25 @@
 	};
 	
 	// Multipart로 요청 받기 위한 객체 생성
-	MultipartRequest multiReq = null;
-		multiReq = new MultipartRequest(
+	MultipartRequest multiReq = new MultipartRequest(
 				request, 
 				realPath, // 파일을 저장할 디렉토리 지정
 				sizeLimit, // 첨부파일 최대 용량 설정(bite)
 				"utf-8", // 인코딩 방식 지정
 				new DefaultFileRenamePolicy() // 중복 파일 처리(동일한 파일명이 업로드되면 뒤에 숫자 등을 붙여 중복 회피)
 			);
-		// 각 파일별 이름 받아오기
-		String fileName = multiReq.getFilesystemName("files");
-		String test = multiReq.getFile("slicedFiles").getName();
-		
-		//
+	// 각 파일별 이름 받아오기
+	String fileName = multiReq.getFilesystemName("files");
+	String test = multiReq.getFile("slicedFiles").getName();
 	
-		if(test != null){
-			//System.out.println(test);
-		File testFile = multiReq.getFile("slicedFiles");
-		System.out.println(testFile.lastModified());
+	System.out.println(test);
+	
+	response.sendRedirect("uploadState.jsp");
+	
+	if(test != null){
 		return;
-		}	
-
-		
+	}
+	
 	uploadState = "완료";
 	
 %>
